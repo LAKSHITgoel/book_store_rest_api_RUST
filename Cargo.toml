@@ -1,0 +1,10 @@
+[package]
+name = "rest_api_rust"
+version = "0.1.0"
+authors = ["LAKSHITgoel <glakshit0@gmial.com>"]
+edition = "2018"
+
+[dependencies]
+diesel = { version = "1.0.0", features = ["postgres"] }
+diesel_codegen = { version = "0.16.0", features = ["postgres"] }
+dotenv = "0.10.0"
