@@ -4,8 +4,8 @@
 extern crate diesel;
 #[macro_use]
 extern crate r2d2;
-extern crate r2d2_diesel;
 extern crate dotenv;
+extern crate r2d2_diesel;
 #[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
@@ -14,15 +14,17 @@ extern crate serde_derive;
 #[macro_use]
 extern crate serde_json;
 
-use diesel::pg::PgConnection;
 use crate::diesel::Connection;
+use diesel::pg::PgConnection;
 use dotenv::dotenv;
-use std::env;
 use rocket_codegen::routes;
+use routes::*;
+use std::env;
 
-mod models;
-mod schema;
 mod db;
+mod models;
+mod routes;
+mod schema;
 mod static_files;
 
 fn rocket() -> rocket::Rocket {
@@ -33,10 +35,21 @@ fn rocket() -> rocket::Rocket {
     let pool = db::init_pool(db_url);
     rocket::ignite()
         .manage(pool)
-        .mount("/",routes![static_files::all, static_files::index])
+        .mount(
+            "/api/v1/",
+            routes![
+                test,
+                index,
+                new,
+                get_book_by_id,
+                update_book_by_id,
+                delete_book_by_id,
+                get_all_books_by_author
+            ],
+        )
+        .mount("/", routes![static_files::all, static_files::index])
+        .register(catchers![not_found])
 }
-
-
 
 fn main() {
     rocket().launch();
